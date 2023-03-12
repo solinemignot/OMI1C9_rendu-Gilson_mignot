@@ -43,14 +43,12 @@ class Graph:
             connectées donc peuvent aller dans 'res' qui est la liste résultat)
         - Étape 2: La liste 'a_voir' correspond à tous les noeuds qu'il faut encore explorer pour avoir leurs voisins pour 
             avoir d'autres composantes connexes. Et la liste 'vus' correspond aux noeuds déjà explorés.
-        - Étape 3: Tant que cette liste est non vide, on regarder tous les noeuds qui ont une arête avec lui. Et s'en suive 
-            deux cas:
+        - Étape 3: Tant que cette liste est non vide, on regarde tous les noeuds qui ont une arête avec lui. Ensuite, il y a deux cas:
                 1) Le voisin est déjà dans 'res', auquel cas on doit rien faire
-                2) Il ne l'est pas et donc il faut le rajouter à 'res'. S'il n'a déjà été vus, on le met également dans
+                2) Il ne l'est pas et donc il faut le rajouter à 'res'. S'il n'a pas déjà été vu, on le met également dans
                     'a_voir'.
-                    voisins.
         - Étape 4: On enlève le noeud que l'on vient d'explorer de 'a_voir' 
-    Enfin, pour obtenir les composantes connectées de chaque noeud, on renvoit la liste [[n]+ connecter(self,n) for n in self.nodes].
+    Enfin, pour obtenir les composantes connectées de chaque noeud, on renvoie la liste [[n]+ connecter(self,n) for n in self.nodes].
     """
     def connected_components(self):
         def connecter(self, n):
@@ -80,7 +78,7 @@ class Graph:
         return (resultat)
     
     """
-        Dans la question précédente, on a récupérer une liste de liste de composantes connectées. Cependant, pour chaque 
+        Dans la question précédente, on a récupéré une liste de liste de composantes connectées. Cependant, pour chaque 
     ensemble de noeuds connectés, on récupère la liste des composantes autant de fois qu'il y a de noeuds (la liste se 
     trouve juste dans un ordre différent à chaque fois).
         Par conséquent, nous souhaitons enlever les doublons. Pour cela, on créé 'vus' qui correspond aux noeuds déjà
@@ -114,24 +112,24 @@ class Graph:
   
     #Séance 1 question 3
     """
-        Dans cette question, on veut savoir s'il existe un chemin entre deux noeud (src et dest), étant donné une puissance.
+        Dans cette question, on veut savoir s'il existe un chemin entre deux noeuds (src et dest), étant donné une puissance.
     Pour cela on va procéder en plusieurs étapes:
         1) On récupère les composantes connectées du graphe et on obtient deux cas:
-                - src et dest ne sont pas connectées et donc on renvoit directement 'None' car il n'existera jms de chemin.
+                - src et dest ne sont pas connectées et donc on renvoie directement 'None' car il n'existera jms de chemin.
                 - elles sont connectées. Il existe donc obligatoirement un chemin (mais peut-être pas pour cette puissance)
                     Donc on va explorer les noeuds voisins.
-        2) On créé 'a_voir' avec tous les voisins directs de la src (sous format de liste car les éléments de 'a_voir vont
+        2) On crée 'a_voir' avec tous les voisins directs de la src (sous format de liste car les éléments de 'a_voir vont
             être des listes de chemins possibles partant de src), avec une puissance de l'arête inférieure à 'power' (car
             sinon le voisin est inaccessible avec cette puissance). (Si src et dest sont voisins directs et que l'arête 
-            a un poids en dessous de 'power', alors on renvoit [src,dest] directement).
+            a un poids en dessous de 'power', alors on renvoie [src,dest] directement).
         3) Tant que 'a_voir' est non vide:
             On se place en son premier noeud. 
             On observe ses voisins qui ont une arête de puissance inférieure à 'power' et il existe plusieurs cas
-                - si c'est la destination, on renvoit le chemin.
+                - si c'est la destination, on renvoie le chemin.
                 - si ça ne l'est pas, on va rajouter à 'a_voir' les différents chemins l+[voisin] (en vérifiant toutefois
                     que le voisin n'est pas déjà dans le chemin l car sinon on aurait des boucles infinies)
         Rq: Le programme se finira dans la boucle a_voir car src et dest sont deux composantes connectées. Cependant, nous 
-            avons quand même mis le 'return None' à la fin de la fonction afin d'être sûre que la fonction renvoit quelquechose
+            avons quand même mis le 'return None' à la fin de la fonction afin d'être sûre que la fonction renvoie quelquechose
             même si ça n'arrivera jamais à là.
     """
     def get_path_with_power(self, src, dest, power):
@@ -170,7 +168,7 @@ class Graph:
     """
     Dans cette question, on veut savoir qu'elle est la distance minimale entre src et dest, munie d'une puissance power.
     Pour cela, on procède de la même manière que pour get_path_with_power, sauf que dès que nous avons un chemin qui marche,
-    on la rajoute à la liste 'finis' et à la fin de la fonction, on garde le chemin avec la distance minimale.
+    on le rajoute à la liste 'finis' et à la fin de la fonction, on garde le chemin avec la distance minimale.
     Pour avoir les distances des différents chemins, on met la distance parcourue en première place dans la liste (donc 
     le premier élément des chemins est la distance et non un noeud du chemin).
     """
@@ -218,9 +216,9 @@ class Graph:
         Dans cette question, on prend deux noeuds src et dest et on veut savoir s'il existe un chemin entre les deux, et si
     oui, quelle est la puissance minimale recquise pour ce chemin. Pour cela on va avoir recours à plusieurs étapes.
         1) On regarde si src et dest sont connectées:
-            - si non, on renvoit qu'il n'y a pas de chemin
+            - si non, on renvoie qu'il n'y a pas de chemin
             - si oui, on récupère toutes les composantes auquelles il est connecté.
-        2) On récupère l'ensemble des puissance des arêtes entre les noeuds des composantes connectées. On trie la liste 
+        2) On récupère l'ensemble des puissances des arêtes entre les noeuds des composantes connectées. On trie la liste 
             dans le sens croissant.
         3) Dans l'ordre croissant des puissances, on regarde s'il existe un chemin entre src et dest pour cette puissance
             grâce à la fonction créée à la question précédente. S'il existe, alors on renvoit ce chemin avec la puissance
@@ -351,14 +349,14 @@ SÉANCE 2
 
 # Séance 2 question 1
 """
-    Dans cette question, on veut estimer le temps nécessaires pour calculer la puissance minimale (et le chemin associé) 
+    Dans cette question, on veut estimer le temps nécessaire pour calculer la puissance minimale (et le chemin associé) 
 sur l'ensemble des trajets pour chacun des fichiers routes.x.in donnés.
-    Pour cela, on créer la fonction 'trajets' qui renvoit le nombre des trajets de routes.x.in, ainsi que les dix 
+    Pour cela, on crée la fonction 'trajets' qui renvoie le nombre des trajets de routes.x.in, ainsi que les dix 
 premiers chemins que l'on veut parcourir pour estimer le temps nécessaire.
-    Dans la question1_séance2(i) 
-    1) on commencer par récupérer le graphe et les trajets que l'on veut parcourir et le nombre total de trajets
+    Dans la fonction question1_séance2(i):
+    1) on commence par récupérer le graphe et les trajets que l'on veut parcourir et le nombre total de trajets
     2) on calcule le temps d'exécution pour chacun des trajets
-    3) on renvoit (tps)/len(l)*n qui correspond au temps estimé d'exécution pour récupérer entièrement les trajets.
+    3) on renvoie (tps)/len(l)*n qui correspond au temps estimé d'exécution pour récupérer entièrement les trajets.
 """
 def trajets(filename):
     with open(filename, "r") as file:
@@ -391,7 +389,7 @@ def question1_séance2(i):
 """
 Créons maintenant une fonction qui va renvoyer routes.x.out avec pour chaque paire le chemin de puissance minimale.
     1) récupérons tous les trajets
-    2) On créé une nouveau fichier
+    2) On crée une nouveau fichier
     3) Dans ce nouveau fichier, on rajoute les chemins
 """
 #Étape 1
@@ -420,19 +418,19 @@ def routes_x_out(i):
 
 #Séance 2 Question 3- Kruskal
 """
-    Dans cette question, on veut une fonction kruskal qui prend en entrée un graphe au format de la classe Graph (e.g., g) 
+    Dans cette question, on veut écrire une fonction kruskal qui prend en entrée un graphe au format de la classe Graph (e.g., g) 
 et qui retourne un autre élément de cette classe (e.g., g_mst) correspondant à un arbre couvrant de poids minimal de g.
 
 Pour cela, on va procéder en plusieurs étapes:
     1) On récupère l'ensemble des arêtes du graph.
     2) On ordonne les arêtes du graph de la puissance minimale à la puissance maximale.
 On créé les fonctions auxiliaires suivantes:
-    3) get_class(x,vert) qui renvoit la classe dans laquelle x appartient, dans vert. S'il n'y en a pas, elle renvoit
+    3) get_class(x,vert) qui renvoie la classe dans laquelle x appartient, dans vert. S'il n'y en a pas, elle renvoie
         la liste vide.
-    4) join_classes qui permet de fusionner les classes de x et de y. (ou si x et y sont déjà dans la même, dans renvoyer
+    4) join_classes qui permet de fusionner les classes de x et de y. (si x et y sont déjà dans la même, de renvoyer
         leur classe commune).
     5) remove_class(class_x,vert) qui permet d'enlever de l'ensemble des classes, la classe de x
-    6) faire_graph qui prend en argument classes (l'ensembles des classes du nouveau graphe) et tree_edges (l'ensemble 
+    6) faire_graph qui prend en argument classes (l'ensemble des classes du nouveau graphe) et tree_edges (l'ensemble 
     des arêtes du nouveau graph) et qui retourne le graphe allant avec.
 Enfin, l'étape 7 c'est d'utiliser les fonctions auxiliaires pour mettre en place l'algorithme de kruskal.
 """
@@ -529,19 +527,19 @@ Calculons la complexité de cette fonction.
 
 #Séance 2 question 5
 """
-Dans cette question, on veut écrire la nouvelle fonction min_power qui renvoit la puissance minimale. 
-Pour ce type de graph, il faut savoir que si deux noeud sont connectées, alors elles ont forcément un chemin, et celui
+Dans cette question, on veut écrire la nouvelle fonction min_power qui renvoie la puissance minimale. 
+Pour ce type de graph, il faut savoir que si deux noeud sont connectés, alors iles ont forcément un chemin, et celui
 çi est unique et possède par conséquent la puissance minimale.
 Pour cela, on procède de la même manière que dans la séance 1.
-        1) On regarde si src et dest sont connectées:
-            - si non, on renvoit qu'il n'y a pas de chemin
+        1) On regarde si src et dest sont connectés:
+            - si non, on renvoie qu'il n'y a pas de chemin
             - si oui, on continue le programme
-        2) On créé 'a_voir' avec tous les voisins directs de la src (sous format de liste car les éléments de 'a_voir vont
+        2) On crée 'a_voir' avec tous les voisins directs de la src (sous format de liste car les éléments de 'a_voir' vont
             être des listes de chemins possibles partant de src).
         3) Tant que 'a_voir' est non vide:
             On se place sur le premier noeud de la liste. 
             On observe ses voisins:
-                - si c'est la destination, on renvoit le chemin, ainsi que la puissance
+                - si c'est la destination, on renvoie le chemin, ainsi que la puissance
                 - si ça ne l'est pas, on va rajouter à 'a_voir' les différents chemins l+[voisin] 
 """
 def min_power_bis(self,src,dest):
