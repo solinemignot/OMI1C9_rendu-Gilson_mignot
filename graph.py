@@ -34,7 +34,7 @@ class Graph:
         self.nb_edges +=1
 
     #Séance 1 Question 2
-    """ 
+    """
         Dans la première partie de cette question, on veut trouver, pour chaque noeud, les noeuds avec lesquels il est
     connecté. Par conséquent, nous avons écrit la fonction imbriquée 'connecter' qui va permettre de trouver les 
     composantes connectées pour un noeud donné.
