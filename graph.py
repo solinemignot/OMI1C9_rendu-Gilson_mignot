@@ -275,7 +275,7 @@ sys.path.append("delivery_network/")
 
 import unittest 
 from graph import Graph, graph_from_file
-data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/"
+data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
 
 #pour la question 1:
 class Test_q1(unittest.TestCase):
@@ -370,7 +370,7 @@ def trajets(filename):
 def question1_séance2(i):
     #Étape 1
     import time
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
     tps=0
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
@@ -404,7 +404,7 @@ def tous_les_trajets(filemame):
 
 def routes_x_out(i):
     #Étape 2
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
     g = graph_from_file(data_path + file_name1)
@@ -618,5 +618,65 @@ class Test_s2_q5(unittest.TestCase):
         krusk=kruskal(g)
         self.assertEqual(min_power_bis(krusk,1,7), (14,[1,2,5,7]))
         self.assertEqual(min_power_bis(krusk,9,4), (14,[9,8,1,2,3,4]))
+
+
+
+"""
+SÉANCE 3
+"""
+ 
+#récupérer les camions
+
+def camions(filename):
+    with open(filename, "r") as file:
+        n=int(file.readline())
+        l=[]
+        for i in range (n):
+            puiss,cout=list(map(int, file.readline().split()))
+            l.append((puiss,cout))
+    return l
+
+"""
+On récupère la liste qui possède (puissance,coût) de chaque camion, grâce à 'camions'.
+On récupère la liste complète des routes qui veut parcourir, ainsi qu'une liste correspondant à leurs
+puissances minimales.
+
+
+
+
+
+
+
+"""
+
+def puissances_minimales_routes(i):
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    file_name1 = "network."+str(i)+".in"
+    file_name2="routes."+str(i)+".in"
+    g = graph_from_file(data_path + file_name1)
+    l=tous_les_trajets(data_path+file_name2)
+    résultat=[]
+    for i in range (len(n)):
+        résultat.append(g.min_power(src=l[j][0],dest=l[j][1]))
+    return résultat
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
