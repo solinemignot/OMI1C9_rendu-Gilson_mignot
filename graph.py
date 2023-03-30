@@ -424,101 +424,45 @@ et qui retourne un autre élément de cette classe (e.g., g_mst) correspondant �
 Pour cela, on va procéder en plusieurs étapes:
     1) On récupère l'ensemble des arêtes du graph.
     2) On ordonne les arêtes du graph de la puissance minimale à la puissance maximale.
-On créé les fonctions auxiliaires suivantes:
-    3) get_class(x,vert) qui renvoie la classe dans laquelle x appartient, dans vert. S'il n'y en a pas, elle renvoie
-        la liste vide.
-    4) join_classes qui permet de fusionner les classes de x et de y. (si x et y sont déjà dans la même, de renvoyer
-        leur classe commune).
-    5) remove_class(class_x,vert) qui permet d'enlever de l'ensemble des classes, la classe de x
-    6) faire_graph qui prend en argument classes (l'ensemble des classes du nouveau graphe) et tree_edges (l'ensemble 
-    des arêtes du nouveau graph) et qui retourne le graphe allant avec.
-Enfin, l'étape 7 c'est d'utiliser les fonctions auxiliaires pour mettre en place l'algorithme de kruskal.
+    3) find(n,classes) qui renvoie la classe dans laquelle n appartient, dans 'classes'.
+    4) On relie la classe de X avec la classe de Y en rajoutant l'arête x-y et en changeant 'classes'.
 """
 #Étape 1
 def get_edges(g):
     edges = []
-    noeuds=[n for n in g.nodes]
-    for n in noeuds:
-        liste=g.graph[n]
-        for i in range (len(liste)):
-            if (liste[i][0],n,liste[i][1]) not in edges:
-                edges.append((n,liste[i][0],liste[i][1]))
+    for n1 in g.nodes:
+        for n2, p, d in g.graph[n1]:
+            edges.append((n1, n2, p))
     return edges
 
-#Étape 2
-def ord_edges(edges):
-    smaller = []
-    greater = []
-    if not edges:
-        return []
-    pivot = edges.pop(0)
-    for (x, y, z) in edges:
-        if z <= pivot[2]:
-            smaller.append((x, y, z))
-        else:
-            greater.append((x, y, z))
-    smaller = ord_edges(smaller)
-    greater = ord_edges(greater)
-    return smaller + [pivot] + greater
-
 #Étape 3
-def get_class(x, vert):
-    if not vert:
-        return []
-    else:
-        for tmp in vert:
-            if x in tmp:
-                return tmp
-        return []
+def find(n,classes):
+        if n!=classes[n]:
+            classes[n] = find(classes[n],classes)
+        return classes[n]
 
-#Étape 4
-def join_classes(x, y, vert):
-    class_x = get_class(x, vert)
-    if y in class_x:
-        return vert
-    else:
-        class_y = get_class(y, vert)
-        vertX = remove_class(class_x, vert)
-        vertY = remove_class(class_y, vertX)
-        return [class_x + class_y] + vertY
-
-#Étape 5
-def remove_class(class_x, vert):
-    if not vert:
-        return []
-    else:
-        head = vert.pop(0)
-        if set(head) == set(class_x):
-            return vert
-        else:
-            return [head] + (remove_class(class_x, vert))
-
-#Étape 6
-def faire_graph(classes,tree_edges):
-    g=Graph()
-    g.graph=dict()
-    for (x,y,z) in tree_edges:
-        g.add_edge(node1=x, node2=y, power_min=z)
-    for l in classes:
-        if len(l)==1:
-            g.nodes.append(l[0])
-            g.graph[l[0]]=[]
-            g.nb_nodes+=1
-    return g
-
-#Étape 7
 def kruskal(g):
+    krusk=Graph(g.nodes)    #Pour avoir un nouveau graphe avec les mêmes noeuds
     tree_edges = []
+    #étape 1
     edges = get_edges(g)
-    classes = [[n] for n in g.nodes]
-    edges = ord_edges(edges)
+    classes = {n:n for n in g.nodes}
+    #étape 2
+    edges.sort(key=lambda x: x[2])
     for (x, y, z) in edges:
-        if y in get_class(x, classes):
-            tree_edges = tree_edges
-        else:
-            tree_edges.append((x, y, z))
-            classes = join_classes(x, y, classes)
-    return faire_graph(classes,tree_edges)
+        #S'il y a autant (ou plus) d'arêtes que de noeuds, alors tous les noeuds sont déjà reliés et donc kruskal est fini.
+        if krusk.nb_edges >= krusk.nb_nodes-1:
+            break
+        #étape 3
+        reprX = find(x,classes)
+        reprY = find(y,classes)
+        #si les deux noeuds sont déjà reliés, on ne change rien. S'ils ne le sont pas, on doit faire l'étape 4
+        if reprX != reprY:
+            #étape 4
+            krusk.add_edge(x, y, z)
+            classes[reprX] = reprY
+    return (krusk)
+
 
 
 """
@@ -659,6 +603,13 @@ def puissances_minimales_routes(i):
     for i in range (len(n)):
         résultat.append(g.min_power(src=l[j][0],dest=l[j][1]))
     return résultat
+
+
+
+
+
+
+
 
 
 
