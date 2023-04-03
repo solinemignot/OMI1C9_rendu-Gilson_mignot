@@ -1,7 +1,7 @@
 """
 SÉANCE 1
 """
-testsoso
+testsosomimi
 class Graph:
     def __init__(self, nodes=[]):
         self.nodes = nodes
