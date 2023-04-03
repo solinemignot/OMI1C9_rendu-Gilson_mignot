@@ -1,7 +1,7 @@
 """
 SÉANCE 1
 """
-testsosomimi
+
 class Graph:
     def __init__(self, nodes=[]):
         self.nodes = nodes
@@ -605,7 +605,9 @@ def puissances_minimales_routes(i):
     return résultat
 
 
-
+"""
+SÉANCE 4
+"""
 
 
 
