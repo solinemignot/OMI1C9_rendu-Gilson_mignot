@@ -609,7 +609,7 @@ def puissances_minimales_routes(i):
 SÉANCE 4
 """
 
-
+nils
 
 
 
