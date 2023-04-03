@@ -608,7 +608,7 @@ def puissances_minimales_routes(i):
 """
 SÉANCE 4
 """
-début séance 4
+
 
 
 
