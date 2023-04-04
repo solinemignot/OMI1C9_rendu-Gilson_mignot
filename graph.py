@@ -520,7 +520,7 @@ def min_power_bis(self,src,dest):
 #Séance 2 question 15
 """ 
 Analysons la compléxité de cette fonction 
-En comparant avec la question 10
+En comparant avec la question 10, on voit que ...
 """
 
 #TESTS UNITAIRES POUR LA SÉANCE 2
@@ -628,10 +628,14 @@ Le temps est bien inférieur à ce que l'on avait dans la partie 2 (en théorie)
 SÉANCE 4
 
 """
+B = 25*10^9
 
 # Séance 4 question 18 
 
-
+"""
+Dans cette fonction, on cherche à maximiser la somme des profits obtenus sur tous les trajets couverts.
+Pour ce faire, on veut que la fonction retourne une collection de camions à acheter ainsi que leurs affectations sur des trajets 
+en optimisant le budget et maximisant les profits qui en découlent.
 
 
 
