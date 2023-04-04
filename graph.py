@@ -1,4 +1,8 @@
 """
+Début du code.
+"""
+
+"""
 SÉANCE 1
 """
 
@@ -347,7 +351,7 @@ class Test_q6(unittest.TestCase):
 SÉANCE 2
 """
 
-# Séance 2 question 1
+# Séance 2 question 10
 """
     Dans cette question, on veut estimer le temps nécessaire pour calculer la puissance minimale (et le chemin associé) 
 sur l'ensemble des trajets pour chacun des fichiers routes.x.in donnés.
@@ -416,7 +420,7 @@ def routes_x_out(i):
         f.write(route+ "\n")
     return f
 
-#Séance 2 Question 3- Kruskal
+#Séance 2 Question 12 - Kruskal
 """
     Dans cette question, on veut écrire une fonction kruskal qui prend en entrée un graphe au format de la classe Graph (e.g., g) 
 et qui retourne un autre élément de cette classe (e.g., g_mst) correspondant à un arbre couvrant de poids minimal de g.
@@ -469,7 +473,7 @@ def kruskal(g):
 Calculons la complexité de cette fonction.
 """
 
-#Séance 2 question 5
+#Séance 2 question 14
 """
 Dans cette question, on veut écrire la nouvelle fonction min_power qui renvoie la puissance minimale. 
 Pour ce type de graph, il faut savoir que si deux noeud sont connectés, alors iles ont forcément un chemin, et celui
@@ -513,10 +517,15 @@ def min_power_bis(self,src,dest):
                     a_voir.append(l3)
     return None
 
+#Séance 2 question 15
+""" 
+Analysons la compléxité de cette fonction 
+En comparant avec la question 10
+"""
 
 #TESTS UNITAIRES POUR LA SÉANCE 2
 
-#pour la question 3
+#Pour la question 12 (Kruskal)
 class Test_kruskal(unittest.TestCase):
     def test_network00(self):
         g = graph_from_file(data_path+"network.00.in")
@@ -549,7 +558,7 @@ class Test_kruskal(unittest.TestCase):
                         }
         self.assertEqual(g_mst.graph, mst_expected)
 
-#pour la question 5
+#pour la question 14
 class Test_s2_q5(unittest.TestCase):
     def test_network2(self):
         g = graph_from_file(data_path+"network.02.in")
@@ -568,7 +577,8 @@ class Test_s2_q5(unittest.TestCase):
 """
 SÉANCE 3
 """
- 
+# Séance 3 question 16 
+
 #récupérer les camions
 
 def camions(filename):
@@ -604,12 +614,22 @@ def puissances_minimales_routes(i):
         résultat.append(g.min_power(src=l[j][0],dest=l[j][1]))
     return résultat
 
+"""
+Justification de la compléxité 
+
+"""
+# Séance 3 question 17 
+
+"""
+Le temps est bien inférieur à ce que l'on avait dans la partie 2 (en théorie)
+"""
 
 """
 SÉANCE 4
+
 """
 
-
+# Séance 4 question 18 
 
 
 
