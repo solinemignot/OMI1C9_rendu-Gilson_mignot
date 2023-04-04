@@ -637,9 +637,7 @@ Dans cette fonction, on cherche à maximiser la somme des profits obtenus sur to
 Pour ce faire, on veut que la fonction retourne une collection de camions à acheter ainsi que leurs affectations sur des trajets 
 en optimisant le budget et maximisant les profits qui en découlent.
 
-
-
-
+"""
 
 
 
