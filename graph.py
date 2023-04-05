@@ -112,7 +112,15 @@ class Graph:
         #Étape 5
         res=[frozenset(l) for l in resultat]
         return (res)
-
+    """
+    Calculons la complexité de ces fonctions.
+    Pour connected_components: 
+        Pour chaque noeud, on parcourt uniquement les noeuds qui sont lui sont connectés. 
+        Donc la complexité de connected_components est en O(noeud*(nb de noeuds connectés))=O(V*E) car, dans le pire des cas,
+        pour chaque noeud on doit parcourir l'integralité des arêtes. 
+    Pour connected_components_set, on doit calculer la liste connected_components, et enlever les doublons donc la complexité
+    est au pire (si tous les noeuds sont indépendants ) en O(V^2 *E).
+    """
   
     #Séance 1 question 3
     """
@@ -135,6 +143,10 @@ class Graph:
         Rq: Le programme se finira dans la boucle a_voir car src et dest sont deux composantes connectées. Cependant, nous 
             avons quand même mis le 'return None' à la fin de la fonction afin d'être sûre que la fonction renvoie quelquechose
             même si ça n'arrivera jamais à là.
+
+    Complexité:
+        Pour chaque path, on regarde au plus une fois chaque arête (dans le pire, les deux noeuds sont opposés dans le graphe)
+        donc la complexité est en O(E).
     """
     def get_path_with_power(self, src, dest, power):
         #Étape 1
@@ -175,8 +187,9 @@ class Graph:
     on le rajoute à la liste 'finis' et à la fin de la fonction, on garde le chemin avec la distance minimale.
     Pour avoir les distances des différents chemins, on met la distance parcourue en première place dans la liste (donc 
     le premier élément des chemins est la distance et non un noeud du chemin).
+
     """
-    def min_dist_with_power(self, src, dest, power):
+    def min_dist_with_power(self, src, dest,power):
         liste_cc=self.connected_components()
         if not(dest in liste_cc[src-1]):
             return None
@@ -215,46 +228,57 @@ class Graph:
                 chemin=finis[i][1:]
         return (mini,chemin)
 
-    #Séance 1 question 6
+#Séance 1 question 6
     """
-        Dans cette question, on prend deux noeuds src et dest et on veut savoir s'il existe un chemin entre les deux, et si
-    oui, quelle est la puissance minimale recquise pour ce chemin. Pour cela on va avoir recours à plusieurs étapes.
-        1) On regarde si src et dest sont connectées:
-            - si non, on renvoie qu'il n'y a pas de chemin
-            - si oui, on récupère toutes les composantes auquelles il est connecté.
-        2) On récupère l'ensemble des puissances des arêtes entre les noeuds des composantes connectées. On trie la liste 
-            dans le sens croissant.
-        3) Dans l'ordre croissant des puissances, on regarde s'il existe un chemin entre src et dest pour cette puissance
-            grâce à la fonction créée à la question précédente. S'il existe, alors on renvoit ce chemin avec la puissance
-            associée. S'il n'existe pas, on voit pour la puissance suivante.
-        Rq: Comme les noeuds src et dest sont connectées, alors il existe forcément un chemin possible, dans le pire cas,
-        la fonction doit voir s'il existe un chemin pour toutes les puissances, jusqu'à arriver à la plus grande puissance.
+La fonction 'parentalité':
+    1) nous créons le dictionnaire pere_dict qui recense la parenté des noeuds grâce au triplet (père, hauteur,puissance minimale)
+        Pour chaque noeud, on initialise à père=noeud et hauteur=0 et puissance=0
+    2) Grâce à la fonction 'recherche_fils', pour chaque triplet des voisins du père (trouvés dans la liste g.graph[pere]),
+        si ce n'est pas le grand_père, on dit que le père est le père et on rajoute la hauteur. Récursivement, on en fait de même pour les fils
+Complexité: On parcourt chaque noeud et chaque arête une unique fois, donc la complexité est en O(E*V).
+
+La fonction 'min_power':
+    1) on vérifie qu'ils sont dans la même composante
+    2) On crée le dictionnaire de parentalité 
+    3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
+
+Complexité de trajet:
+    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
     """
-    def min_power(self,src,dest):
-        #Étape 1
-        liste_cc=self.connected_components()
-        for l in liste_cc:
-            if src in l and not dest in l:
-                return None
-            if src in l:
-                compconnexes=[]
-                for i in l:
-                    if i!=src:
-                        compconnexes.append(i)
-        #Étape 2
-        liste_puissance=[]
-        for n in compconnexes:
-            l=self.graph[n]
-            for j in l:
-                if not j[1] in liste_puissance:
-                    liste_puissance.append(j[1])
-        liste_puissance.sort()
-        #Étape 3
-        for puiss in liste_puissance:
-            res=self.get_path_with_power(src=src, dest=dest, power=puiss)
-            if res!=None:
-                return (puiss,res)
+    
+def parentalité(g):
+    pere_dict = {noeud:(noeud, 0, 0) for noeud in g.nodes} # couple (père, hauteur) 
+    def recherche_fils(pere, grandpere, hauteur):
+        for fils, power_min, dist in g.graph[pere]:
+            if fils != grandpere:
+                pere_dict[fils] = (pere, hauteur, power_min)
+                recherche_fils(fils, pere, hauteur+1)
+    recherche_fils(g.nodes[0], g.nodes[0], 1)
+    return pere_dict
+
+def min_power(g,src, dest):
+    pere=parentalité(g)
+    liste_cc=g.connected_components()
+    if not(dest in liste_cc[src-1]):
         return None
+    def trajet(node1, node2):
+        if node1 == node2:
+            return (0,[node1])
+        pere1, h1, p1 = pere[node1]
+        pere2, h2, p2 = pere[node2]
+        l=trajet(pere1, pere2)
+        print(l)
+        print(node1,node2)
+        if h1 == h2:
+            if pere1==pere2:
+                return (max(p1, p2),[node1,pere1,node2])
+            return (max(p1, p2, l[0]),[node1]+l[1]+[node2])
+        if h1 < h2:
+            return (max(p2, l[0]),l[1]+[node2])
+        if h1 > h2:
+            return (max(p1, l[0]),[node1]+l[1])
+    return trajet(src, dest)
+
 
 # Séance 1 Question 1 partie 2 (et question 4)
 def graph_from_file(filename):
@@ -327,25 +351,25 @@ class Test_q3(unittest.TestCase):
 class Test_q5(unittest.TestCase):
     def test_network1(self):
         g = graph_from_file(data_path+"network.01.in")
-        self.assertEqual(g.min_dist_with_power(3, 1, 11),(2, [3, 2, 1]))
-        self.assertEqual(g.min_dist_with_power(2, 7, 10), None)
+        self.assertEqual(g.min_dist_with_power(3, 1,11),(2, [3, 2, 1]))
+        self.assertEqual(g.min_dist_with_power(2, 7,11), None)
 
     def test_network4(self):
         g = graph_from_file(data_path+"network.04.in")
-        self.assertEqual(g.min_dist_with_power(2, 1, 11), (11,[2, 3, 4, 1]))
-        self.assertEqual(g.min_dist_with_power(2, 7, 10), None)
+        self.assertEqual(g.min_dist_with_power(2, 1,11), (11,[2, 3, 4, 1]))
+        self.assertEqual(g.min_dist_with_power(2, 7,11), None)
 
 #pour la question 6
 class Test_q6(unittest.TestCase):
     def test_network2(self):
-        g = graph_from_file(data_path+"network.02.in")
-        self.assertEqual(g.min_power(2,1),(4, [2,3,4,1]))
-        self.assertEqual(g.min_power(2, 7), None)
+        g = graph_from_file(data_path+"network.01.in")
+        self.assertEqual(min_power(g,2,1),(1, [1,2]))
+        self.assertEqual(min_power(g,2, 7), None)
 
     def test_network0(self):
         g = graph_from_file(data_path+"network.00.in")
-        self.assertEqual(g.min_power(1,7), (14,[1,2,5,7]))
-        self.assertEqual(g.min_power(9,4), (14,[9,8,1,2,3,4]))
+        self.assertEqual(min_power(g,1,7), (14,[1,2,5,7]))
+        self.assertEqual(min_power(g,9,4), (14,[9,8,1,2,3,4]))
 
 """
 SÉANCE 2
@@ -384,7 +408,7 @@ def question1_séance2(i):
     for j in range (len(l)):
         print(j)
         a=time.time()
-        g.min_power(src=l[j][0],dest=l[j][1])
+        min_power(g,src=l[j][0],dest=l[j][1])
         b=time.time()
         tps+=b-a
     #étape 3
@@ -416,7 +440,7 @@ def routes_x_out(i):
     f=open(data_path+"routes."+str(i)+".out","w")
     #étape 3
     for j in range (len(l)):
-        route=g.min_power(src=l[j][0],dest=l[j][1])
+        route=min_power(g,src=l[j][0],dest=l[j][1])
         f.write(route+ "\n")
     return f
 
@@ -577,7 +601,7 @@ class Test_s2_q5(unittest.TestCase):
 """
 SÉANCE 3
 """
-# Séance 3 question 16 
+# Séance 3 question 18 
 
 #récupérer les camions
 
@@ -595,12 +619,6 @@ On récupère la liste qui possède (puissance,coût) de chaque camion, grâce �
 On récupère la liste complète des routes qui veut parcourir, ainsi qu'une liste correspondant à leurs
 puissances minimales.
 
-
-
-
-
-
-
 """
 
 def puissances_minimales_routes(i):
@@ -611,8 +629,8 @@ def puissances_minimales_routes(i):
     l=tous_les_trajets(data_path+file_name2)
     résultat=[]
     for i in range (len(n)):
-        résultat.append(g.min_power(src=l[j][0],dest=l[j][1]))
-    return résultat
+        résultat.append(min_power(g,src=l[j][0],dest=l[j][1]))
+    return résultat 
 
 """
 Justification de la compléxité 
