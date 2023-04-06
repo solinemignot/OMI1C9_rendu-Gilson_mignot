@@ -606,7 +606,7 @@ class Test_s2_q5(unittest.TestCase):
 """
 SÉANCE 3
 """
-# Séance 3 question 18 
+# Séance 3 question 16 
 
 #récupérer les camions
 
