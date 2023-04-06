@@ -561,21 +561,10 @@ def min_power_Trois(src, dest,g):
 
 #Séance 2 question 15
 """ 
-Analysons la compléxité de cette fonction :
- La complexité de la fonction parentalité est en O(|V|+|E|) puisqu'elle parcourt tous les sommets et toutes les arêtes du graphe.
+Analysons la compléxité de cette fonction 
+En comparant avec la question 10, on voit qu'avant, la complexité de min_power était beaucoup trop élevé donc on n'a pas de résultat
+mais là, le programme est optimisé et donc, nous avons des résultats rapides. La nouvelle complexité est donc beaucoup plus faible.
 
- La fonction min_power_bis commence par appeler la fonction parentalité, ce qui prend O(|V|+|E|) de temps. 
- Ensuite, elle itère à travers toutes les connexions du graphe, ce qui peut prendre au pire des cas O(|V|^2) de temps. 
- À chaque itération, elle appelle la fonction trajet, qui a une complexité de O(h), où h est la hauteur de l'arbre de recherche, 
- c'est-à-dire la hauteur de la plus longue chaîne entre les deux sommets de départ et d'arrivée. 
- Dans le pire des cas, la hauteur de l'arbre de recherche est égale au nombre de nœuds dans le graphe, c'est-à-dire O(|V|).
- Par conséquent, la complexité de la fonction min_power_bis est de O(|V|^3 + |V||E|).
-
- Cependant, il y a des appels récursifs dans la fonction trajet qui ne se produisent pas toujours. 
- En pratique, cela signifie que la complexité peut être considérablement réduite dans les cas où l'arbre de recherche est assez petit.
-
- En comparant avec la question 10, on voit que la complexité est un peu plus faible.
- Mais surtout, on voit en pratique que on ne parcourt jamais l'entiereté des trajets et que l'éxecution est beaucoup plus rapide.
 """
 
 def question15_séance2(i):
@@ -692,32 +681,11 @@ Dans cette fonction, on cherche à maximiser la somme des profits obtenus sur to
 Pour ce faire, on veut que la fonction retourne une collection de camions à acheter ainsi que leurs affectations sur des trajets 
 en optimisant le budget et maximisant les profits qui en découlent.
 
-"""
-
-#camions_used= [(indice du camion,puiss,cout ) des camions utilisés]
-#routes_visitées=[(min_power de la route,gain ) des routes parcourues]
-
+Nous allons voir plusieurs approches:
+- l'approche brute qui est beaucoup trop longue donc ne marche que pour de petits graphes, et petit nombre de routes
+- l'approche glouton
 
 """
-    Approche force brute:
-    1) On fait un dictionnaire { puissance : [camions dont la puissance est inférieure à la puissance] }
-"""
-
-def dict_puiss(camions,routes):
-    d=dict()
-    for j in range (len(routes)):
-        if routes[j][0] not in d.keys():
-            d[routes[j][0]]=(1,[])
-        else:
-            a,l=d[routes[j][0]]
-            d[routes[j][0]]=(a+1,[])
-    for i in range (len(camions)):
-        for j in range (len(routes)):
-            if routes[j][0]<=camions[i][1] and not i in d[routes[j][0]][1]:
-                d[routes[j][0]][1].append(i)
-    return d
-
-
 
 #Approche brute
 
@@ -732,7 +700,6 @@ def truck_choice(route, trucks):
         return trucks[-1]
     return trucks[i]
 
-
 def approche_brute(i_routes,i_camion,contrainte):
     import itertools
     l_routes=tous_les_trajets(i_routes)
@@ -740,11 +707,10 @@ def approche_brute(i_routes,i_camion,contrainte):
     l_camions.sort(key=lambda x:x[1],reverse=True) # trie les camions en fonction de leur coût ordre croissant
     ens_comb_routes = []         # on veut remplir cette liste avec de "vraies routes" en fonction de la liste en binaire qu'on a déjà
     ens_comb_routes_1=[]
-    print(1)
     for i in range(1,1+len(l_routes)):
+        print(i)
         for j in itertools.combinations(l_routes, i):
             ens_comb_routes_1.append(list(j))
-    print(2)
     for list_routes in ens_comb_routes_1:
         profit=0
         for route in list_routes:
@@ -752,7 +718,6 @@ def approche_brute(i_routes,i_camion,contrainte):
         ens_comb_routes.append([list_routes, profit])
     ens_comb_routes = sorted(ens_comb_routes, key=lambda x:x[1], reverse = True)    # On trie l'ensemble des comb de route en fonction du profit ordre décroissant
     i=0     # variable de comptage sur ens_comb_routes
-    print(3)
     for comb_routes in ens_comb_routes:
         choosen_trucks=[]
         cost=0
@@ -766,7 +731,6 @@ def approche_brute(i_routes,i_camion,contrainte):
                 cost=contrainte+1
         if cost<=contrainte:
             return comb_routes, choosen_trucks, cost
-
 
 
 #Algorithme glouton
@@ -788,11 +752,10 @@ def fonction_aux_glouton(i):
         efficacite.append([gain/(power+0.1),power,gain,i+1])
     return efficacite
 
-
 def glouton(i_network,i_camion,B):
     efficacite=fonction_aux_glouton(i_network)
     efficacite.sort(key= lambda x:x[0])
-    w_dep=0
+    B_dep=0
     gain_tot=0
     l_camions=camions(i_camion)
     bon_camion=[]
@@ -812,20 +775,14 @@ def glouton(i_network,i_camion,B):
         bon_camion.append([indice_camion,cout_camion])
     i=0
     camion_et_trajet={trajet[3]: {} for trajet in efficacite}
-    while len(bon_camion)>i and w_dep+bon_camion[i][1]<B:
+    while len(bon_camion)>i and B_dep+bon_camion[i][1]<B:
         if bon_camion[i][0] not in camion_et_trajet[efficacite[i][3]].keys():
             camion_et_trajet[efficacite[i][3]][bon_camion[i][0]]=1
         else:
             camion_et_trajet[efficacite[i][3]][bon_camion[i][0]]+=1
         gain_tot+=efficacite[i][2]
-        w_dep+=bon_camion[i][1]
+        B_dep+=bon_camion[i][1]
         i+=1
     return gain_tot,camion_et_trajet
-
-
-
-
-
-
 
 
