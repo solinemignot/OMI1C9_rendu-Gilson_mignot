@@ -242,8 +242,6 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
-Complexité de trajet:
-    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
@@ -289,6 +287,11 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
+
+"""
+La complexité de cet algorithme est O(V^3∗log(V)). C'est trop important pour fonctionner sur des gros graphiques.
+Il faut chercher une optimisation.
+"""
 
 #TESTS UNITAIRES POUR LA SÉANCE 1
 import sys 
@@ -440,6 +443,12 @@ def routes_x_out(i):
         f.write(route+ "\n")
     return f
 
+
+"""
+Malheureusement, on n'a pas de réponse sur le temps pour calculer min_power sur des gros graphes.
+La complexité de min_power est trop grande
+"""
+
 #Séance 2 Question 12 - Kruskal
 """
     Dans cette question, on veut écrire une fonction kruskal qui prend en entrée un graphe au format de la classe Graph (e.g., g) 
@@ -490,7 +499,7 @@ def kruskal(g):
 
 
 """
-Calculons la complexité de cette fonction.
+Calculons la complexité de cette fonction : c'est O(Elog(E)) (cf rapport)
 """
 
 #Séance 2 question 14
@@ -507,8 +516,6 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
-Complexité de trajet:
-    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
@@ -562,8 +569,9 @@ def min_power_Trois(src, dest,g):
 #Séance 2 question 15
 """ 
 Analysons la compléxité de cette fonction 
-En comparant avec la question 10, on voit qu'avant, la complexité de min_power était beaucoup trop élevé donc on n'a pas de résultat
-mais là, le programme est optimisé et donc, nous avons des résultats rapides. La nouvelle complexité est donc beaucoup plus faible.
+En comparant avec la question 10, on voit qu'avant, la complexité de min_power était beaucoup trop élevé donc on n'avait pas de résultat.
+Ici, le programme est optimisé et donc, nous avons des résultats rapides. 
+La nouvelle complexité est donc beaucoup plus faible : c'est O(V^2)
 
 """
 
@@ -586,6 +594,10 @@ def question15_séance2(i):
     #étape 3
     return (tps)/len(l)*n
 
+"""
+On peut exécuter pour trouver un temps (raisonnable!)
+question15_séance2(9) = 190 secondes
+"""
 
 #TESTS UNITAIRES POUR LA SÉANCE 2
 
@@ -736,7 +748,9 @@ def approche_brute(i_routes,i_camion,contrainte):
         if cost<=contrainte:
             return comb_routes, choosen_trucks, cost
     return None
-
+"""
+Complexité exponentielle : impossible à appliquer pour de gros graphes
+"""
 
 #Algorithme glouton
 
@@ -790,5 +804,9 @@ def glouton(i_network,i_camion,B):
         B_dep+=bon_camion[i][1]
         i+=1
     return gain_tot,camion_et_trajet
-
-
+""" 
+Complexité beaucoup plus raisonnable, résultats rapides et cohérents?
+"""
+"""
+FIN
+"""
