@@ -118,9 +118,8 @@ class Graph:
         Pour chaque noeud, on parcourt uniquement les noeuds qui sont lui sont connectés. 
         Donc la complexité de connected_components est en O(noeud*(nb de noeuds connectés))=O(V*E) car, dans le pire des cas,
         pour chaque noeud on doit parcourir l'integralité des arêtes. 
-        
     Pour connected_components_set, on doit calculer la liste connected_components, et enlever les doublons donc la complexité
-    est au pire (si tous les noeuds sont indépendant ) en O(V^2 *E).
+    est au pire (si tous les noeuds sont indépendants ) en O(V^2 *E).
     """
   
     #Séance 1 question 3
@@ -183,7 +182,7 @@ class Graph:
     
     #Séance 1 question 5 (bonus)
     """
-    Dans cette question, on veut savoir quelle est la distance minimale entre src et dest, munie d'une puissance power.
+    Dans cette question, on veut savoir qu'elle est la distance minimale entre src et dest, munie d'une puissance power.
     Pour cela, on procède de la même manière que pour get_path_with_power, sauf que dès que nous avons un chemin qui marche,
     on le rajoute à la liste 'finis' et à la fin de la fonction, on garde le chemin avec la distance minimale.
     Pour avoir les distances des différents chemins, on met la distance parcourue en première place dans la liste (donc 
@@ -245,41 +244,34 @@ La fonction 'min_power':
 
 Complexité de trajet:
     On traverse au plus une fois chaque arête, donc la complexité est en O(E).
+
+Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
     
-def parentalité(g):
-    pere_dict = {noeud:(noeud, 0, 0) for noeud in g.nodes} # couple (père, hauteur) 
-    def recherche_fils(pere, grandpere, hauteur):
-        for fils, power_min, dist in g.graph[pere]:
-            if fils != grandpere:
-                pere_dict[fils] = (pere, hauteur, power_min)
-                recherche_fils(fils, pere, hauteur+1)
-    recherche_fils(g.nodes[0], g.nodes[0], 1)
-    return pere_dict
-
-def min_power(g,src, dest):
-    pere=parentalité(g)
-    liste_cc=g.connected_components()
-    if not(dest in liste_cc[src-1]):
-        return None
-    def trajet(node1, node2):
-        if node1 == node2:
-            return (0,[node1])
-        pere1, h1, p1 = pere[node1]
-        pere2, h2, p2 = pere[node2]
-        l=trajet(pere1, pere2)
-        print(l)
-        print(node1,node2)
-        if h1 == h2:
-            if pere1==pere2:
-                return (max(p1, p2),[node1,pere1,node2])
-            return (max(p1, p2, l[0]),[node1]+l[1]+[node2])
-        if h1 < h2:
-            return (max(p2, l[0]),l[1]+[node2])
-        if h1 > h2:
-            return (max(p1, l[0]),[node1]+l[1])
-    return trajet(src, dest)
-
+def min_power(self,src,dest):
+    #Étape 1
+    liste_cc=self.connected_components()
+    for l in liste_cc:
+        if src in l and not dest in l:
+            return None
+        if src in l:
+            compconnexes=[]
+            for i in l:
+                if i!=src:
+                    compconnexes.append(i)
+    #Étape 2
+    liste_puissance=[]
+    for n in compconnexes:
+        l=self.graph[n]
+        for j in l:
+            if not j[1] in liste_puissance:
+                liste_puissance.append(j[1])
+    liste_puissance.sort()
+    #Étape 3
+    for puiss in liste_puissance:
+        res=self.get_path_with_power(src=src, dest=dest, power=puiss)
+        if res!=None:
+            return (puiss,res)
 
 # Séance 1 Question 1 partie 2 (et question 4)
 def graph_from_file(filename):
@@ -364,13 +356,13 @@ class Test_q5(unittest.TestCase):
 class Test_q6(unittest.TestCase):
     def test_network2(self):
         g = graph_from_file(data_path+"network.01.in")
-        self.assertEqual(min_power(g,2,1),(1, [1,2]))
+        self.assertEqual(min_power(g,2,1),(1, [2,1]))
         self.assertEqual(min_power(g,2, 7), None)
 
     def test_network0(self):
         g = graph_from_file(data_path+"network.00.in")
-        self.assertEqual(min_power(g,1,7), (14,[1,2,5,7]))
-        self.assertEqual(min_power(g,9,4), (14,[9,8,1,2,3,4]))
+        self.assertEqual(min_power(g,1,7), (14, [1, 2, 5, 7]))
+        self.assertEqual(min_power(g,9,4), (14,[9, 8, 1, 2, 3, 4]))
 
 """
 SÉANCE 2
@@ -500,47 +492,59 @@ Calculons la complexité de cette fonction.
 
 #Séance 2 question 14
 """
-Dans cette question, on veut écrire la nouvelle fonction min_power qui renvoie la puissance minimale. 
-Pour ce type de graph, il faut savoir que si deux noeuds sont connectés, alors ils ont forcément un chemin, et celui-ci
-est unique et possède par conséquent la puissance minimale.
-Pour cela, on procède de la même manière que dans la séance 1.
-        1) On regarde si src et dest sont connectés:
-            - si non, on renvoie qu'il n'y a pas de chemin
-            - si oui, on continue le programme
-        2) On crée 'a_voir' avec tous les voisins directs de la src (sous format de liste car les éléments de 'a_voir' vont
-            être des listes de chemins possibles partant de src).
-        3) Tant que 'a_voir' est non vide:
-            On se place sur le premier noeud de la liste. 
-            On observe ses voisins:
-                - si c'est la destination, on renvoie le chemin, ainsi que la puissance
-                - si ça ne l'est pas, on va rajouter à 'a_voir' les différents chemins l+[voisin] 
-"""
-def min_power_bis(self,src,dest):
-    #Étape 1
-    liste_cc=self.connected_components()
-    for l in liste_cc:
-        if src in l and not dest in l:
-            return None
-    a_voir=[]
-    for i in range (len(self.graph[src])):
-        a_voir.append([self.graph[src][i][1]]+[src]+[self.graph[src][i][0]])
-        if self.graph[src][i][0]==dest:
-            return (self.graph[src][i][1],[src,dest])
-    while a_voir!=[]:
-        l=a_voir[0]
-        l2=[]
-        for i in range (len(self.graph[l[-1]])):
-            l2.append((max(l[0],self.graph[l[-1]][i][1]),self.graph[l[-1]][i][0]))
-            if self.graph[l[-1]][i][0]==dest:
-                return(max(l[0],self.graph[l[-1]][i][1]),l[1:]+[dest]) #Si un chemin existe, il est unique donc a la puissance minimum
-        a_voir.remove(l)
-        for i in l2:
-            l3=l+[i[1]]
-            l3[0]=i[0]
-            if dest not in l[1:]and (i[1] not in l[1:]):
-                if not l3[-1]==dest:
-                    a_voir.append(l3)
-    return None
+La fonction 'parentalité':
+    1) nous créons le dictionnaire pere_dict qui recense la parenté des noeuds grâce au triplet (père, hauteur,puissance minimale)
+        Pour chaque noeud, on initialise à père=noeud et hauteur=0 et puissance=0
+    2) Grâce à la fonction 'recherche_fils', pour chaque triplet des voisins du père (trouvés dans la liste g.graph[pere]),
+        si ce n'est pas le grand_père, on dit que le père est le père et on rajoute la hauteur. Récursivement, on en fait de même pour les fils
+Complexité: On parcourt chaque noeud et chaque arête une unique fois, donc la complexité est en O(E*V).
+
+La fonction 'min_power':
+    1) on vérifie qu'ils sont dans la même composante
+    2) On crée le dictionnaire de parentalité 
+    3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
+
+Complexité de trajet:
+    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
+
+Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
+    """
+    
+def parentalité(g):
+    pere_dict = {noeud:(noeud, 0, 0) for noeud in g.nodes} # couple (père, hauteur) 
+    def recherche_fils(pere, grandpere, hauteur):
+        for fils, power_min, dist in g.graph[pere]:
+            if fils != grandpere:
+                pere_dict[fils] = (pere, hauteur, power_min)
+                recherche_fils(fils, pere, hauteur+1)
+    recherche_fils(g.nodes[0], g.nodes[0], 1)
+    return pere_dict
+
+def min_power_bis(g,src, dest):
+    pere=parentalité(g)
+    liste_cc=g.connected_components()
+    if not(dest in liste_cc[src-1]):
+        return None
+    def trajet(node1, node2):
+        if node1 == node2:
+            return (0,[node1])
+        pere1, h1, p1 = pere[node1]
+        pere2, h2, p2 = pere[node2]
+        if h1 == h2:
+            if pere1==pere2:
+                return (max(p1, p2),[node1,pere1,node2])
+            l=trajet(pere1, pere2)
+            print(l)
+            return (max(p1, p2, l[0]),[node1]+l[1]+[node2])
+        if h1 < h2:
+            l=trajet(pere2, node1)
+            print(l)
+            return (max(p2, l[0]),[node2]+l[1])
+        if h1 > h2:
+            l=trajet(pere1, node2)
+            print(l)
+            return (max(p1, l[0]),[node1]+l[1])
+    return trajet(src, dest)
 
 #Séance 2 question 15
 """ 
@@ -617,7 +621,7 @@ def camions(filename):
 
 """
 On récupère la liste qui possède (puissance,coût) de chaque camion, grâce à 'camions'.
-On récupère la liste complète des routes qui doivent être parcourues, ainsi qu'une liste correspondant à leurs
+On récupère la liste complète des routes qui veut parcourir, ainsi qu'une liste correspondant à leurs
 puissances minimales.
 
 """
@@ -657,13 +661,6 @@ Pour ce faire, on veut que la fonction retourne une collection de camions à ach
 en optimisant le budget et maximisant les profits qui en découlent.
 
 """
-
-
-
-
-
-
-
 
 
 
