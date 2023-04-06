@@ -704,14 +704,14 @@ Nous allons voir plusieurs approches:
 
 def truck_choice(route, trucks):
     power = g.min_power(route[0], route[1])[0]
-    if trucks[0][0]<power:
+    if trucks[0][0]<power:    # Le camion ne peut pas prendre la route 
         return None
     i=0
     while i<len(trucks) and trucks[i][0]>=power:
         i+=1
     if i==len(trucks):
         return trucks[-1]
-    return trucks[i]
+    return trucks[i]. # Le camion le plus adapté 
 
 def approche_brute(i_routes,i_camion,contrainte):
     import itertools
@@ -757,30 +757,30 @@ Complexité exponentielle : impossible à appliquer pour de gros graphes
 #Algorithme glouton
 
 def fonction_aux_glouton(i):
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
-    file_name1 = "network."+str(i)+".in"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/" # chemin
+    file_name1 = "network."+str(i)+".in"                              # fichier
     g = graph_from_file(data_path + file_name1)
     krusk=kruskal(g)
     l=tous_les_trajets(i)
     puissances=[]
     efficacite=[]
     for j in range (len(l)):
-        puiss=min_power_bis(l[j][0],l[j][1],krusk)
-        puissances.append(puiss[0])
+        puiss=min_power_bis(l[j][0],l[j][1],krusk) # puissance minimale pour parcourir
+        puissances.append(puiss[0]). # On stocke toutes les puissances 
     for i in range (len(l)):
         power=puissances[i]
         src,dest,gain=l[i]
-        efficacite.append([gain/(power+0.1),power,gain,i+1])
-    return efficacite
+        efficacite.append([gain/(power+0.1),power,gain,i+1]) # On calcule l'efficacité en calculant le gain divisé par la puissance minimale
+    return efficacite #retourne une liste 
 
 def glouton(i_network,i_camion,B):
     #on récupère la liste efficacité créée grâce à la fonction_aux_glouton, qu'on trie par ordre croissant en fonction de gain/(power+0.1)
     efficacite=fonction_aux_glouton(i_network)
-    efficacite.sort(key= lambda x:x[0])
+    efficacite.sort(key= lambda x:x[0]) # On trie 
     B_dep=0
     gain_tot=0
     l_camions=camions(i_camion)
-    bon_camion=[]
+    bon_camion=[]. 
     for trajet in efficacite:
         puiss=trajet[1]
         indice_camion=-1
@@ -794,9 +794,10 @@ def glouton(i_network,i_camion,B):
                     premier=False
                     indice_camion=j
                     cout_camion=l_camions[j][1]
-        bon_camion.append([indice_camion,cout_camion])
+        bon_camion.append([indice_camion,cout_camion]) # indice l'indice du camion qui permet de parcourir le chemin en 
+                                                       # respectant la capacité maximale B et avec un coût minimal cout_camion
     i=0
-    camion_et_trajet={trajet[3]: {} for trajet in efficacite}
+    camion_et_trajet={trajet[3]: {} for trajet in efficacite} # dictionnaire  qui contient l'indice du camion qui a été utilisé pour parcourir le chemin en question
     while len(bon_camion)>i and B_dep+bon_camion[i][1]<B:
         if bon_camion[i][0] not in camion_et_trajet[efficacite[i][3]].keys():
             camion_et_trajet[efficacite[i][3]][bon_camion[i][0]]=1
