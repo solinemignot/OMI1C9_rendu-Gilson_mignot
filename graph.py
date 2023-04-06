@@ -805,7 +805,7 @@ def glouton(i_network,i_camion,B):
         i+=1
     return gain_tot,camion_et_trajet
 """ 
-Complexité beaucoup plus raisonnable, résultats rapides et cohérents?
+Complexité beaucoup plus raisonnable, résultats rapides et cohérents
 """
 """
 FIN
