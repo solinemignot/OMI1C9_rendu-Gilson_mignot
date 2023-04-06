@@ -301,7 +301,7 @@ sys.path.append("delivery_network/")
 
 import unittest 
 from graph import Graph, graph_from_file
-data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
 
 #pour la question 1:
 class Test_q1(unittest.TestCase):
@@ -396,7 +396,7 @@ def trajets(filename):
 def question1_séance2(i):
     #Étape 1
     import time
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
     tps=0
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
@@ -420,7 +420,7 @@ Créons maintenant une fonction qui va renvoyer routes.x.out avec pour chaque pa
 """
 #Étape 1
 def tous_les_trajets(i):
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
     file_name2="routes."+str(i)+".in"
     filename=data_path+file_name2
     with open(filename, "r") as file:
@@ -433,7 +433,7 @@ def tous_les_trajets(i):
 
 def routes_x_out(i):
     #Étape 2
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
     g = graph_from_file(data_path + file_name1)
@@ -580,7 +580,7 @@ La nouvelle complexité est donc beaucoup plus faible : c'est O(V^2)
 def question15_séance2(i):
     #Étape 1
     import time
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
     tps=0
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
@@ -659,7 +659,7 @@ SÉANCE 4
 
 #récupérer les camions
 def camions(i):
-    filename="/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"+"trucks."+str(i)+".in"
+    filename="/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"+"trucks."+str(i)+".in"
     with open(filename, "r") as file:
         n=int(file.readline())
         l=[]
@@ -675,7 +675,7 @@ puissances minimales.
 """
 
 def puissances_minimales_routes(i):
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/"
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
     g = graph_from_file(data_path + file_name1)
@@ -757,7 +757,7 @@ Complexité exponentielle : impossible à appliquer pour de gros graphes
 #Algorithme glouton
 
 def fonction_aux_glouton(i):
-    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/" # chemin
+    data_path = "/home/onyxia/work/OMI1C9_rendu-Gilson_mignot/input/" # chemin
     file_name1 = "network."+str(i)+".in"                              # fichier
     g = graph_from_file(data_path + file_name1)
     krusk=kruskal(g)
