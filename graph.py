@@ -579,7 +579,6 @@ def question15_séance2(i):
     n,l=trajets(data_path+file_name2)
     #étape 2
     for j in range (len(l)):
-        print(j)
         a=time.time()
         min_power_bis(l[j][0],l[j][1],krusk)
         b=time.time()
@@ -628,8 +627,8 @@ class Test_s2_q5(unittest.TestCase):
     def test_network1(self):
         g = graph_from_file(data_path+"network.01.in")
         krusk=kruskal(g)
-        self.assertEqual(min_power_bis(2,1,krusk),(1, [2,1]))
-        self.assertEqual(min_power_bis(4,7,krusk), (1,[4,5,7]))
+        self.assertEqual(min_power_bis(2,1,krusk),(1,[2,1]))
+        self.assertEqual(min_power_bis(3,1,krusk), (1,[3,2,1]))
 
     def test_network0(self):
         g = graph_from_file(data_path+"network.00.in")
@@ -705,20 +704,24 @@ def approche_brute(i_routes,i_camion,contrainte):
     l_routes=tous_les_trajets(i_routes)
     l_camions=camions(i_camion)
     l_camions.sort(key=lambda x:x[1],reverse=True) # trie les camions en fonction de leur coût ordre croissant
-    ens_comb_routes = []         # on veut remplir cette liste avec de "vraies routes" en fonction de la liste en binaire qu'on a déjà
+    ens_comb_routes = []        
     ens_comb_routes_1=[]
+    #on fait la liste des combinaisons de routes possibles
     for i in range(1,1+len(l_routes)):
         print(i)
         for j in itertools.combinations(l_routes, i):
             ens_comb_routes_1.append(list(j))
+    #on remplace pour que 'ens_comb_routes' soit une liste de (liste de route, profit de la liste)
     for list_routes in ens_comb_routes_1:
         profit=0
         for route in list_routes:
             profit+=route[2]
         ens_comb_routes.append([list_routes, profit])
-    ens_comb_routes = sorted(ens_comb_routes, key=lambda x:x[1], reverse = True)    # On trie l'ensemble des comb de route en fonction du profit ordre décroissant
+    ens_comb_routes = sorted(ens_comb_routes, key=lambda x:x[1], reverse = True)    
+    # On trie l'ensemble des comb de route en fonction du profit ordre décroissant
     i=0     # variable de comptage sur ens_comb_routes
     for comb_routes in ens_comb_routes:
+        #on regarde si on peut avoir des camions pour ces routes 
         choosen_trucks=[]
         cost=0
         comb_routes_1=comb_routes[0]
@@ -729,8 +732,10 @@ def approche_brute(i_routes,i_camion,contrainte):
                 choosen_trucks.append(truck)
             else:
                 cost=contrainte+1
+        #dès que le coût est en dessous du budget, on peut se permettre d'acheter les camions et donc on garde cette combinaison
         if cost<=contrainte:
             return comb_routes, choosen_trucks, cost
+    return None
 
 
 #Algorithme glouton
@@ -753,6 +758,7 @@ def fonction_aux_glouton(i):
     return efficacite
 
 def glouton(i_network,i_camion,B):
+    #on récupère la liste efficacité créée grâce à la fonction_aux_glouton, qu'on trie par ordre croissant en fonction de gain/(power+0.1)
     efficacite=fonction_aux_glouton(i_network)
     efficacite.sort(key= lambda x:x[0])
     B_dep=0
