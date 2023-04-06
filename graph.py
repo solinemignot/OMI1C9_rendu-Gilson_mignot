@@ -577,8 +577,21 @@ def min_power_bis(g,src, dest):
 
 #Séance 2 question 15
 """ 
-Analysons la compléxité de cette fonction 
-En comparant avec la question 10, on voit que ...
+Analysons la compléxité de cette fonction :
+La complexité de la fonction parentalité est en O(|V|+|E|) puisqu'elle parcourt tous les sommets et toutes les arêtes du graphe.
+
+La fonction min_power_bis commence par appeler la fonction parentalité, ce qui prend O(|V|+|E|) de temps. 
+Ensuite, elle itère à travers toutes les connexions du graphe, ce qui peut prendre au pire des cas O(|V|^2) de temps. 
+À chaque itération, elle appelle la fonction trajet, qui a une complexité de O(h), où h est la hauteur de l'arbre de recherche, 
+c'est-à-dire la hauteur de la plus longue chaîne entre les deux sommets de départ et d'arrivée. 
+Dans le pire des cas, la hauteur de l'arbre de recherche est égale au nombre de nœuds dans le graphe, c'est-à-dire O(|V|).
+Par conséquent, la complexité de la fonction min_power_bis est de O(|V|^3 + |V||E|).
+
+Cependant, il y a des appels récursifs dans la fonction trajet qui ne se produisent pas toujours. 
+En pratique, cela signifie que la complexité peut être considérablement réduite dans les cas où l'arbre de recherche est assez petit.
+
+En comparant avec la question 10, on voit que la complexité est un peu plus faible.
+Mais surtout, on voit en pratique que on ne parcourt jamais l'entiereté des trajets et que l'éxecution est beaucoup plus rapide.
 """
 
 #TESTS UNITAIRES POUR LA SÉANCE 2
