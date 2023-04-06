@@ -530,22 +530,22 @@ def parentalité(g):
                 pere_dict[fils] = (pere, hauteur, power_min)
                 recherche_fils(fils, pere, hauteur+1)
     recherche_fils(g.nodes[0], g.nodes[0], 1)
-    return pere_dict
+    return pere_dict # renvoie un dictionnaire contenant les informations sur les parents de chaque nœud dans l'arbre
 
-def min_power_bis(src, dest,g):
+def min_power_bis(src, dest,g): # algorithme de parcours de l'arbre de couverture minimale (MST)
     pere=parentalité(g)
-    def trajet(node1, node2):
+    def trajet(node1, node2): # calcule le trajet le plus court entre deux nœuds node1 et node2
         if node1 == node2:
             return (0,[node1])
         pere1, h1, p1 = pere[node1]
         pere2, h2, p2 = pere[node2]
         if h1 == h2:
-            if pere1==pere2:
-                return (max(p1, p2),[node1,pere1,node2])
+            if pere1==pere2: # si les deux nœuds ont le même parent
+                return (max(p1, p2),[node1,pere1,node2]) # la connexion directe entre les deux nœuds.
             l=trajet(pere1, pere2)
             return (max(p1, p2, l[0]),[node1]+l[1]+[node2])
-        if h1 < h2:
-            l=trajet(pere2, node1)
+        if h1 < h2: # si le parent de node1 est plus haut dans l'arbre que celui de node2
+            l=trajet(pere2, node1) # on appelle récursivement trajet avec le parent de node2 et node1
             return (max(p2, l[0]),[node2]+l[1])
         if h1 > h2:
             l=trajet(pere1, node2)
