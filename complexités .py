@@ -271,6 +271,11 @@ def min_power(self,src,dest):
         if res!=None:
             return (puiss,res)
 
+"""
+La complexité de cet algorithme est O(V^3∗log(V)). C'est trop important pour fonctionner sur des gros graphiques.
+Il faut chercher une optimisation.
+"""
+        
 # Séance 1 Question 1 partie 2 (et question 4)
 def graph_from_file(filename):
     with open(filename, "r") as file:
@@ -288,10 +293,7 @@ def graph_from_file(filename):
                 raise Exception("Format incorrect")
     return g
 
-"""
-La complexité de cet algorithme est O(V^3∗log(V)). C'est trop important pour fonctionner sur des gros graphiques.
-Il faut chercher une optimisation.
-"""
+
 
 #TESTS UNITAIRES POUR LA SÉANCE 1
 import sys 
