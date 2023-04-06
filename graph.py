@@ -226,7 +226,7 @@ class Graph:
             if finis[i][0]<mini:
                 mini=finis[i][0]
                 chemin=finis[i][1:]
-        return (mini,chemin)
+        return (mini,chemin)   
 
 #Séance 1 question 6
     """
@@ -242,6 +242,8 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
+Complexité de trajet:
+    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
@@ -287,27 +289,6 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
-
-""" 
-La fonction min_power prend en entrée les arguments src et dest, qui sont les noms des sommets 
-de départ et d'arrivée pour trouver le plus court chemin ayant une puissance minimale.
-
-La complexité de cette fonction dépend de la complexité des fonctions auxquelles elle fait appel. 
-Les fonctions appelées sont :
-
-self.connected_components(), qui renvoie la liste des composantes connexes du graphe. Sa complexité est en O(V+E), 
-où V est le nombre de sommets et E le nombre d'arêtes du graphe.
-self.graph[n], qui renvoie la liste des voisins du sommet n. Sa complexité dépend du nombre de voisins de n.
-self.get_path_with_power(src, dest, power). Sa complexité est en O(E log V).
-Ainsi, la complexité de la fonction min_power dépend du nombre de composantes connexes, du nombre de sommets et d'arêtes du graphe,
-ainsi que de la puissance maximale recherchée.
-Dans le pire des cas, où chaque sommet est dans une composante connexe différente 
-et où la puissance maximale est la plus grande possible, la complexité de la fonction est en O(V^3 log V). 
-Cependant, dans la plupart des cas, la complexité sera inférieure à cela.
-
-Néanmoins, une compléxité aussi élevée, même dans le pire des cas s'avère être beaucoup trop élevée
-Il faut chercher à optimiser cette fonction.
-"""
 
 #TESTS UNITAIRES POUR LA SÉANCE 1
 import sys 
@@ -433,13 +414,16 @@ Créons maintenant une fonction qui va renvoyer routes.x.out avec pour chaque pa
     3) Dans ce nouveau fichier, on rajoute les chemins
 """
 #Étape 1
-def tous_les_trajets(filemame):
+def tous_les_trajets(i):
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    file_name2="routes."+str(i)+".in"
+    filename=data_path+file_name2
     with open(filename, "r") as file:
         n=int(file.readline())
         l=[]
         for i in range (n):
             traj=list(map(int, file.readline().split()))
-            l.append((traj[0],traj[1]))
+            l.append((traj[0],traj[1],traj[2]))
     return l
 
 def routes_x_out(i):
@@ -448,7 +432,7 @@ def routes_x_out(i):
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
     g = graph_from_file(data_path + file_name1)
-    l=tous_les_trajets(data_path+file_name2)
+    l=tous_les_trajets(i)
     f=open(data_path+"routes."+str(i)+".out","w")
     #étape 3
     for j in range (len(l)):
@@ -507,18 +491,6 @@ def kruskal(g):
 
 """
 Calculons la complexité de cette fonction.
-
-Voici la complexité de chaque étape :
-
-Étape 1 : On boucle sur chaque nœud et chaque voisin de ce nœud. Cette étape a une complexité en temps de O(E)
-Étape 2 : On trie la liste des arêtes par ordre croissant de poids. Cette étape a une complexité en temps de O(E log E)
-Étape 3 : On cherche les représentants des ensembles contenant les nœuds x et y. Cette étape utilise la fonction 
-find qui a une complexité en temps de O(log n) dans le pire des cas, où n est la taille de l'ensemble.
-Étape 4 : On ajoute l'arête (x, y) à l'arbre couvrant minimum et on met à jour les représentants des ensembles 
-contenant les nœuds x et y. Cette étape a une complexité en temps de O(log n) dans le pire des cas
-La complexité totale de la fonction Kruskal est donc de O(E log E) dans le pire des cas
-
-
 """
 
 #Séance 2 question 14
@@ -535,6 +507,8 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
+Complexité de trajet:
+    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
@@ -549,11 +523,8 @@ def parentalité(g):
     recherche_fils(g.nodes[0], g.nodes[0], 1)
     return pere_dict
 
-def min_power_bis(g,src, dest):
+def min_power_bis(src, dest,g):
     pere=parentalité(g)
-    liste_cc=g.connected_components()
-    if not(dest in liste_cc[src-1]):
-        return None
     def trajet(node1, node2):
         if node1 == node2:
             return (0,[node1])
@@ -563,36 +534,70 @@ def min_power_bis(g,src, dest):
             if pere1==pere2:
                 return (max(p1, p2),[node1,pere1,node2])
             l=trajet(pere1, pere2)
-            print(l)
             return (max(p1, p2, l[0]),[node1]+l[1]+[node2])
         if h1 < h2:
             l=trajet(pere2, node1)
-            print(l)
             return (max(p2, l[0]),[node2]+l[1])
         if h1 > h2:
             l=trajet(pere1, node2)
-            print(l)
             return (max(p1, l[0]),[node1]+l[1])
+    return trajet(src, dest)
+
+#Renvoie uniquement la puissance minimale
+def min_power_Trois(src, dest,g):
+    pere=parentalité(g)
+    def trajet(node1, node2):
+        if node1 == node2:
+            return 0
+        pere1, h1, p1 = pere[node1]
+        pere2, h2, p2 = pere[node2]
+        if h1 == h2:
+            return max(p1, p2, trajet(pere1, pere2))
+        if h1 < h2:
+            return max(p2, trajet(pere2, node1))
+        if h1 > h2:
+            return max(p1, trajet(pere1, node2))
     return trajet(src, dest)
 
 #Séance 2 question 15
 """ 
 Analysons la compléxité de cette fonction :
-La complexité de la fonction parentalité est en O(|V|+|E|) puisqu'elle parcourt tous les sommets et toutes les arêtes du graphe.
+ La complexité de la fonction parentalité est en O(|V|+|E|) puisqu'elle parcourt tous les sommets et toutes les arêtes du graphe.
 
-La fonction min_power_bis commence par appeler la fonction parentalité, ce qui prend O(|V|+|E|) de temps. 
-Ensuite, elle itère à travers toutes les connexions du graphe, ce qui peut prendre au pire des cas O(|V|^2) de temps. 
-À chaque itération, elle appelle la fonction trajet, qui a une complexité de O(h), où h est la hauteur de l'arbre de recherche, 
-c'est-à-dire la hauteur de la plus longue chaîne entre les deux sommets de départ et d'arrivée. 
-Dans le pire des cas, la hauteur de l'arbre de recherche est égale au nombre de nœuds dans le graphe, c'est-à-dire O(|V|).
-Par conséquent, la complexité de la fonction min_power_bis est de O(|V|^3 + |V||E|).
+ La fonction min_power_bis commence par appeler la fonction parentalité, ce qui prend O(|V|+|E|) de temps. 
+ Ensuite, elle itère à travers toutes les connexions du graphe, ce qui peut prendre au pire des cas O(|V|^2) de temps. 
+ À chaque itération, elle appelle la fonction trajet, qui a une complexité de O(h), où h est la hauteur de l'arbre de recherche, 
+ c'est-à-dire la hauteur de la plus longue chaîne entre les deux sommets de départ et d'arrivée. 
+ Dans le pire des cas, la hauteur de l'arbre de recherche est égale au nombre de nœuds dans le graphe, c'est-à-dire O(|V|).
+ Par conséquent, la complexité de la fonction min_power_bis est de O(|V|^3 + |V||E|).
 
-Cependant, il y a des appels récursifs dans la fonction trajet qui ne se produisent pas toujours. 
-En pratique, cela signifie que la complexité peut être considérablement réduite dans les cas où l'arbre de recherche est assez petit.
+ Cependant, il y a des appels récursifs dans la fonction trajet qui ne se produisent pas toujours. 
+ En pratique, cela signifie que la complexité peut être considérablement réduite dans les cas où l'arbre de recherche est assez petit.
 
-En comparant avec la question 10, on voit que la complexité est un peu plus faible.
-Mais surtout, on voit en pratique que on ne parcourt jamais l'entiereté des trajets et que l'éxecution est beaucoup plus rapide.
+ En comparant avec la question 10, on voit que la complexité est un peu plus faible.
+ Mais surtout, on voit en pratique que on ne parcourt jamais l'entiereté des trajets et que l'éxecution est beaucoup plus rapide.
 """
+
+def question15_séance2(i):
+    #Étape 1
+    import time
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    tps=0
+    file_name1 = "network."+str(i)+".in"
+    file_name2="routes."+str(i)+".in"
+    g = graph_from_file(data_path + file_name1)
+    krusk=kruskal(g)
+    n,l=trajets(data_path+file_name2)
+    #étape 2
+    for j in range (len(l)):
+        print(j)
+        a=time.time()
+        min_power_bis(l[j][0],l[j][1],krusk)
+        b=time.time()
+        tps+=b-a
+    #étape 3
+    return (tps)/len(l)*n
+
 
 #TESTS UNITAIRES POUR LA SÉANCE 2
 
@@ -604,7 +609,7 @@ class Test_kruskal(unittest.TestCase):
         mst_expected = {1: [(8, 0, 1), (2, 11, 1), (6, 12, 1)],
                         2: [(5, 4, 1), (3, 10, 1), (1, 11, 1)],
                         3: [(4, 4, 1), (2, 10, 1)],
-                        4: [(10, 4, 1), (3, 4, 1)],
+                        4: [(3, 4, 1),(10, 4, 1)],
                         5: [(2, 4, 1), (7, 14, 1)],
                         6: [(1, 12, 1)],
                         7: [(5, 14, 1)],
@@ -618,8 +623,8 @@ class Test_kruskal(unittest.TestCase):
         g_mst = kruskal(g)
         mst_expected = {1: [(4, 4, 1)],
                         2: [(3,4,1)],
-                        3: [(4,4,1),(2,4,1)],
-                        4: [(3, 4, 1),(1,4,1)],
+                        3: [(2,4,1),(4,4,1)],
+                        4: [(1,4,1),(3, 4, 1)],
                         5:[],
                         6:[],
                         7:[],
@@ -631,41 +636,40 @@ class Test_kruskal(unittest.TestCase):
 
 #pour la question 14
 class Test_s2_q5(unittest.TestCase):
-    def test_network2(self):
-        g = graph_from_file(data_path+"network.02.in")
+    def test_network1(self):
+        g = graph_from_file(data_path+"network.01.in")
         krusk=kruskal(g)
-        self.assertEqual(min_power_bis(krusk,2,1),(4, [2,3,4,1]))
-        self.assertEqual(min_power_bis(krusk,2, 7), None)
+        self.assertEqual(min_power_bis(2,1,krusk),(1, [2,1]))
+        self.assertEqual(min_power_bis(4,7,krusk), (1,[4,5,7]))
 
     def test_network0(self):
         g = graph_from_file(data_path+"network.00.in")
         krusk=kruskal(g)
-        self.assertEqual(min_power_bis(krusk,1,7), (14,[1,2,5,7]))
-        self.assertEqual(min_power_bis(krusk,9,4), (14,[9,8,1,2,3,4]))
+        self.assertEqual(min_power_bis(1,7,krusk), (14,[7, 5, 2, 1]))
+        self.assertEqual(min_power_bis(9,4,krusk), (14,[4, 3, 2, 1, 8, 9]))
 
 
 
 """
-SÉANCE 3
+SÉANCE 4
 """
-# Séance 3 question 16 
+# Séance 4 question 18 
 
 #récupérer les camions
-
-def camions(filename):
+def camions(i):
+    filename="/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"+"trucks."+str(i)+".in"
     with open(filename, "r") as file:
         n=int(file.readline())
         l=[]
         for i in range (n):
             puiss,cout=list(map(int, file.readline().split()))
-            l.append((puiss,cout))
+            l.append((i,puiss,cout))
     return l
 
 """
 On récupère la liste qui possède (puissance,coût) de chaque camion, grâce à 'camions'.
 On récupère la liste complète des routes qui veut parcourir, ainsi qu'une liste correspondant à leurs
 puissances minimales.
-
 """
 
 def puissances_minimales_routes(i):
@@ -673,27 +677,13 @@ def puissances_minimales_routes(i):
     file_name1 = "network."+str(i)+".in"
     file_name2="routes."+str(i)+".in"
     g = graph_from_file(data_path + file_name1)
-    l=tous_les_trajets(data_path+file_name2)
+    krusk=kruskal(g)
+    l=tous_les_trajets(i)
     résultat=[]
-    for i in range (len(n)):
-        résultat.append(min_power(g,src=l[j][0],dest=l[j][1]))
+    for j in range (len(l)):
+        puiss,traj=min_power_bis(l[j][0],l[j][1],krusk)
+        résultat.append((puiss,l[j][2]))   #(min_power de la route, gain rapporté par la route)
     return résultat 
-
-"""
-Justification de la compléxité 
-
-"""
-# Séance 3 question 17 
-
-"""
-Le temps est bien inférieur à ce que l'on avait dans la partie 2 (en théorie)
-"""
-
-"""
-SÉANCE 4
-
-"""
-B = 25*10^9
 
 # Séance 4 question 18 
 
@@ -703,6 +693,134 @@ Pour ce faire, on veut que la fonction retourne une collection de camions à ach
 en optimisant le budget et maximisant les profits qui en découlent.
 
 """
+
+#camions_used= [(indice du camion,puiss,cout ) des camions utilisés]
+#routes_visitées=[(min_power de la route,gain ) des routes parcourues]
+
+
+"""
+    Approche force brute:
+    1) On fait un dictionnaire { puissance : [camions dont la puissance est inférieure à la puissance] }
+"""
+
+def dict_puiss(camions,routes):
+    d=dict()
+    for j in range (len(routes)):
+        if routes[j][0] not in d.keys():
+            d[routes[j][0]]=(1,[])
+        else:
+            a,l=d[routes[j][0]]
+            d[routes[j][0]]=(a+1,[])
+    for i in range (len(camions)):
+        for j in range (len(routes)):
+            if routes[j][0]<=camions[i][1] and not i in d[routes[j][0]][1]:
+                d[routes[j][0]][1].append(i)
+    return d
+
+
+
+#Approche brute
+
+def truck_choice(route, trucks):
+    power = g.min_power(route[0], route[1])[0]
+    if trucks[0][0]<power:
+        return None
+    i=0
+    while i<len(trucks) and trucks[i][0]>=power:
+        i+=1
+    if i==len(trucks):
+        return trucks[-1]
+    return trucks[i]
+
+
+def approche_brute(i_routes,i_camion,contrainte):
+    import itertools
+    l_routes=tous_les_trajets(i_routes)
+    l_camions=camions(i_camion)
+    l_camions.sort(key=lambda x:x[1],reverse=True) # trie les camions en fonction de leur coût ordre croissant
+    ens_comb_routes = []         # on veut remplir cette liste avec de "vraies routes" en fonction de la liste en binaire qu'on a déjà
+    ens_comb_routes_1=[]
+    print(1)
+    for i in range(1,1+len(l_routes)):
+        for j in itertools.combinations(l_routes, i):
+            ens_comb_routes_1.append(list(j))
+    print(2)
+    for list_routes in ens_comb_routes_1:
+        profit=0
+        for route in list_routes:
+            profit+=route[2]
+        ens_comb_routes.append([list_routes, profit])
+    ens_comb_routes = sorted(ens_comb_routes, key=lambda x:x[1], reverse = True)    # On trie l'ensemble des comb de route en fonction du profit ordre décroissant
+    i=0     # variable de comptage sur ens_comb_routes
+    print(3)
+    for comb_routes in ens_comb_routes:
+        choosen_trucks=[]
+        cost=0
+        comb_routes_1=comb_routes[0]
+        for route in comb_routes_1:
+            truck=truck_choice([route[0],route[1]],l_camions)
+            if truck !=None:
+                cost+=truck[0]
+                choosen_trucks.append(truck)
+            else:
+                cost=contrainte+1
+        if cost<=contrainte:
+            return comb_routes, choosen_trucks, cost
+
+
+
+#Algorithme glouton
+
+def fonction_aux_glouton(i):
+    data_path = "/home/onyxia/work/OMI1C9_rendu-interm-diaire/input/"
+    file_name1 = "network."+str(i)+".in"
+    g = graph_from_file(data_path + file_name1)
+    krusk=kruskal(g)
+    l=tous_les_trajets(i)
+    puissances=[]
+    efficacite=[]
+    for j in range (len(l)):
+        puiss=min_power_bis(l[j][0],l[j][1],krusk)
+        puissances.append(puiss[0])
+    for i in range (len(l)):
+        power=puissances[i]
+        src,dest,gain=l[i]
+        efficacite.append([gain/(power+0.1),power,gain,i+1])
+    return efficacite
+
+
+def glouton(i_network,i_camion,B):
+    efficacite=fonction_aux_glouton(i_network)
+    efficacite.sort(key= lambda x:x[0])
+    w_dep=0
+    gain_tot=0
+    l_camions=camions(i_camion)
+    bon_camion=[]
+    for trajet in efficacite:
+        puiss=trajet[1]
+        indice_camion=-1
+        cout_camion=trajet[2]
+        premier=True
+        for j in range(len(l_camions)):
+            if l_camions[j][0]<puiss:
+                continue
+            else:
+                if premier or l_camions[j][1]<cout_camion:
+                    premier=False
+                    indice_camion=j
+                    cout_camion=l_camions[j][1]
+        bon_camion.append([indice_camion,cout_camion])
+    i=0
+    camion_et_trajet={trajet[3]: {} for trajet in efficacite}
+    while len(bon_camion)>i and w_dep+bon_camion[i][1]<B:
+        if bon_camion[i][0] not in camion_et_trajet[efficacite[i][3]].keys():
+            camion_et_trajet[efficacite[i][3]][bon_camion[i][0]]=1
+        else:
+            camion_et_trajet[efficacite[i][3]][bon_camion[i][0]]+=1
+        gain_tot+=efficacite[i][2]
+        w_dep+=bon_camion[i][1]
+        i+=1
+    return gain_tot,camion_et_trajet
 
 
 
