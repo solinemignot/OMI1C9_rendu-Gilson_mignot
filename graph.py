@@ -118,8 +118,9 @@ class Graph:
         Pour chaque noeud, on parcourt uniquement les noeuds qui sont lui sont connectés. 
         Donc la complexité de connected_components est en O(noeud*(nb de noeuds connectés))=O(V*E) car, dans le pire des cas,
         pour chaque noeud on doit parcourir l'integralité des arêtes. 
+        
     Pour connected_components_set, on doit calculer la liste connected_components, et enlever les doublons donc la complexité
-    est au pire (si tous les noeuds sont indépendants ) en O(V^2 *E).
+    est au pire (si tous les noeuds sont indépendant ) en O(V^2 *E).
     """
   
     #Séance 1 question 3
@@ -182,7 +183,7 @@ class Graph:
     
     #Séance 1 question 5 (bonus)
     """
-    Dans cette question, on veut savoir qu'elle est la distance minimale entre src et dest, munie d'une puissance power.
+    Dans cette question, on veut savoir quelle est la distance minimale entre src et dest, munie d'une puissance power.
     Pour cela, on procède de la même manière que pour get_path_with_power, sauf que dès que nous avons un chemin qui marche,
     on le rajoute à la liste 'finis' et à la fin de la fonction, on garde le chemin avec la distance minimale.
     Pour avoir les distances des différents chemins, on met la distance parcourue en première place dans la liste (donc 
@@ -500,8 +501,8 @@ Calculons la complexité de cette fonction.
 #Séance 2 question 14
 """
 Dans cette question, on veut écrire la nouvelle fonction min_power qui renvoie la puissance minimale. 
-Pour ce type de graph, il faut savoir que si deux noeud sont connectés, alors iles ont forcément un chemin, et celui
-çi est unique et possède par conséquent la puissance minimale.
+Pour ce type de graph, il faut savoir que si deux noeuds sont connectés, alors ils ont forcément un chemin, et celui-ci
+est unique et possède par conséquent la puissance minimale.
 Pour cela, on procède de la même manière que dans la séance 1.
         1) On regarde si src et dest sont connectés:
             - si non, on renvoie qu'il n'y a pas de chemin
@@ -616,7 +617,7 @@ def camions(filename):
 
 """
 On récupère la liste qui possède (puissance,coût) de chaque camion, grâce à 'camions'.
-On récupère la liste complète des routes qui veut parcourir, ainsi qu'une liste correspondant à leurs
+On récupère la liste complète des routes qui doivent être parcourues, ainsi qu'une liste correspondant à leurs
 puissances minimales.
 
 """
