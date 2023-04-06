@@ -242,8 +242,6 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
-Complexité de trajet:
-    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
@@ -289,6 +287,27 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
+
+""" 
+La fonction min_power prend en entrée les arguments src et dest, qui sont les noms des sommets 
+de départ et d'arrivée pour trouver le plus court chemin ayant une puissance minimale.
+
+La complexité de cette fonction dépend de la complexité des fonctions auxquelles elle fait appel. 
+Les fonctions appelées sont :
+
+self.connected_components(), qui renvoie la liste des composantes connexes du graphe. Sa complexité est en O(V+E), 
+où V est le nombre de sommets et E le nombre d'arêtes du graphe.
+self.graph[n], qui renvoie la liste des voisins du sommet n. Sa complexité dépend du nombre de voisins de n.
+self.get_path_with_power(src, dest, power). Sa complexité est en O(E log V).
+Ainsi, la complexité de la fonction min_power dépend du nombre de composantes connexes, du nombre de sommets et d'arêtes du graphe,
+ainsi que de la puissance maximale recherchée.
+Dans le pire des cas, où chaque sommet est dans une composante connexe différente 
+et où la puissance maximale est la plus grande possible, la complexité de la fonction est en O(V^3 log V). 
+Cependant, dans la plupart des cas, la complexité sera inférieure à cela.
+
+Néanmoins, une compléxité aussi élevée, même dans le pire des cas s'avère être beaucoup trop élevée
+Il faut chercher à optimiser cette fonction.
+"""
 
 #TESTS UNITAIRES POUR LA SÉANCE 1
 import sys 
@@ -488,6 +507,18 @@ def kruskal(g):
 
 """
 Calculons la complexité de cette fonction.
+
+Voici la complexité de chaque étape :
+
+Étape 1 : On boucle sur chaque nœud et chaque voisin de ce nœud. Cette étape a une complexité en temps de O(E)
+Étape 2 : On trie la liste des arêtes par ordre croissant de poids. Cette étape a une complexité en temps de O(E log E)
+Étape 3 : On cherche les représentants des ensembles contenant les nœuds x et y. Cette étape utilise la fonction 
+find qui a une complexité en temps de O(log n) dans le pire des cas, où n est la taille de l'ensemble.
+Étape 4 : On ajoute l'arête (x, y) à l'arbre couvrant minimum et on met à jour les représentants des ensembles 
+contenant les nœuds x et y. Cette étape a une complexité en temps de O(log n) dans le pire des cas
+La complexité totale de la fonction Kruskal est donc de O(E log E) dans le pire des cas
+
+
 """
 
 #Séance 2 question 14
@@ -504,8 +535,6 @@ La fonction 'min_power':
     2) On crée le dictionnaire de parentalité 
     3) on crée la fonction récursive 'trajet' qui renvoie (puissance minimale du trajet, le trajet).
 
-Complexité de trajet:
-    On traverse au plus une fois chaque arête, donc la complexité est en O(E).
 
 Ces fonctions marchent uniquement quand les graphes n'ont pas de cercles. (ex: quand ils sont kurskalisés)
     """
