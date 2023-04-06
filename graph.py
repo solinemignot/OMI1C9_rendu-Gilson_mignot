@@ -272,7 +272,7 @@ def min_power(self,src,dest):
             return (puiss,res)
 
 """
-La complexité de cet algorithme est O(V^3∗log(V)). C'est trop important pour fonctionner sur des gros graphiques.
+La complexité de cet algorithme (dans le pire des cas) est O(V^3∗log(V)). C'est trop important pour fonctionner sur des gros graphiques.
 Il faut chercher une optimisation.
 """
         
